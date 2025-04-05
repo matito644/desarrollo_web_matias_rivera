@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Detalle de Actividad</title>
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <header>
+            <h1>Detalle de Actividad</h1>
+        </header>
+        <div id="detalleActividad"></div>
+        <div class="buttons">
+            <button onclick="location.href='listado-actividades.html'">
+                Volver al Listado de Actividades
+            </button>
+            <button onclick="location.href='index.html'">
+                Volver a la Portada
+            </button>
+        </div>
+
+        <!-- Modal para las fotos ampliadas -->
+        <div id="photoModal" class="modal">
+            <div class="modal-content">
+                <span id="closeModal" class="close">&times;</span>
+                <div id="imgContainer"></div>
+            </div>
+        </div>
+        <script src="js/detalle.js"></script>
+    </body>
+</html>

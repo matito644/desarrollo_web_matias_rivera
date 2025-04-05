@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Listado de Actividades</title>
+        <link rel="stylesheet" href="css/style.css" />
+        <script defer src="js/listado.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Listado de Actividades</h1>
+        </header>
+        <div class="activities-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Inicio</th>
+                        <th>Término</th>
+                        <th>Comuna</th>
+                        <th>Sector</th>
+                        <th>Tema</th>
+                        <th>Organizador</th>
+                        <th>Total Fotos</th>
+                    </tr>
+                </thead>
+                <tbody id="actividadesTableBody"></tbody>
+            </table>
+        </div>
+        <div class="buttons">
+            <button onclick="location.href='index.html'">
+                Volver a Portada
+            </button>
+        </div>
+    </body>
+</html>

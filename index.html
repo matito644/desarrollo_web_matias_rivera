@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Portada</title>
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <header>
+            <h1>Bienvenido a Actividades Recreativas</h1>
+        </header>
+
+        <div class="menu">
+            <button onclick="location.href='agregar-actividad.html'">
+                Agregar Actividad
+            </button>
+            <button onclick="location.href='listado-actividades.html'">
+                Ver Listado de Actividades
+            </button>
+            <button onclick="location.href='estadisticas.html'">
+                Estadísticas
+            </button>
+        </div>
+
+        <div class="activities">
+            <h2>Últimas 5 Actividades</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Inicio</th>
+                        <th>Término</th>
+                        <th>Comuna</th>
+                        <th>Sector</th>
+                        <th>Tema</th>
+                        <th>Foto</th>
+                    </tr>
+                </thead>
+                <tbody id="activitiesTableBody"></tbody>
+            </table>
+        </div>
+
+        <script src="js/app.js"></script>
+    </body>
+</html>

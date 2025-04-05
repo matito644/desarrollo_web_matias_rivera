@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Agregar Actividad</title>
+        <link rel="stylesheet" href="css/style.css" />
+    </head>
+    <body>
+        <header>
+            <h1>Agregar Actividad</h1>
+        </header>
+        <form id="activityForm" novalidate>
+            <!-- Sección 1: Información del lugar -->
+            <fieldset>
+                <legend>¿Dónde?</legend>
+                <label for="regionSelect">Región <span>*</span></label>
+                <select id="regionSelect" required>
+                    <option value="">-- Seleccione Región --</option>
+                </select>
+
+                <label for="comunaSelect">Comuna <span>*</span></label>
+                <select id="comunaSelect" required>
+                    <option value="">-- Seleccione Comuna --</option>
+                </select>
+
+                <label for="sectorInput"
+                    >Sector (opcional, máx. 100 caracteres)</label
+                >
+                <input
+                    type="text"
+                    id="sectorInput"
+                    maxlength="100"
+                    placeholder="Ej: Centro, Norte, etc."
+                />
+            </fieldset>
+
+            <!-- Sección 2: Datos del organizador -->
+            <fieldset>
+                <legend>¿Quién organiza?</legend>
+
+                <label for="organizerName">Nombre <span>*</span></label>
+                <input
+                    type="text"
+                    id="organizerName"
+                    maxlength="200"
+                    placeholder="Nombre del organizador"
+                    required
+                />
+
+                <label for="organizerEmail">Email <span>*</span></label>
+                <input
+                    type="email"
+                    id="organizerEmail"
+                    maxlength="100"
+                    placeholder="correo@gmail.com"
+                    required
+                />
+
+                <label for="organizerPhone">
+                    Número de celular
+                    <small>(opcional, formato +NNN.NNNNNNNN)</small>
+                </label>
+                <input
+                    type="tel"
+                    id="organizerPhone"
+                    placeholder="+569.12345678"
+                    pattern="^\+\d{3}\.\d{8}$"
+                />
+
+                <div id="contactGroup">
+                    <p>Contactar por:</p>
+                    <div class="contact-option">
+                        <input
+                            type="checkbox"
+                            name="instagram"
+                            id="chk-instagram"
+                            onclick="toggleContactInput(this);"
+                        />
+                        <label for="chk-instagram">Instagram</label>
+                        <input
+                            type="text"
+                            id="contact-instagram"
+                            name="instagram-id"
+                            class="contact-input"
+                            placeholder="ID o URL"
+                            minlength="4"
+                            maxlength="50"
+                        />
+                    </div>
+                    <div class="contact-option">
+                        <input
+                            type="checkbox"
+                            name="whatsapp"
+                            id="chk-whatsapp"
+                            onclick="toggleContactInput(this);"
+                        />
+                        <label for="chk-whatsapp">WhatsApp</label>
+                        <input
+                            type="text"
+                            id="contact-whatsapp"
+                            name="whatsapp-id"
+                            class="contact-input"
+                            placeholder="ID o URL"
+                            minlength="4"
+                            maxlength="50"
+                        />
+                    </div>
+                    <div class="contact-option">
+                        <input
+                            type="checkbox"
+                            name="telegram"
+                            id="chk-telegram"
+                            onclick="toggleContactInput(this);"
+                        />
+                        <label for="chk-telegram">Telegram</label>
+                        <input
+                            type="text"
+                            id="contact-telegram"
+                            name="telegram-id"
+                            class="contact-input"
+                            placeholder="ID o URL"
+                            minlength="4"
+                            maxlength="50"
+                        />
+                    </div>
+                    <div class="contact-option">
+                        <input
+                            type="checkbox"
+                            name="tiktok"
+                            id="chk-tiktok"
+                            onclick="toggleContactInput(this);"
+                        />
+                        <label for="chk-tiktok">TikTok</label>
+                        <input
+                            type="text"
+                            id="contact-tiktok"
+                            name="tiktok-id"
+                            class="contact-input"
+                            placeholder="ID o URL"
+                            minlength="4"
+                            maxlength="50"
+                        />
+                    </div>
+                    <div class="contact-option">
+                        <input
+                            type="checkbox"
+                            name="x"
+                            id="chk-x"
+                            onclick="toggleContactInput(this);"
+                        />
+                        <label for="chk-x">X</label>
+                        <input
+                            type="text"
+                            id="contact-x"
+                            name="x-id"
+                            class="contact-input"
+                            placeholder="ID o URL"
+                            minlength="4"
+                            maxlength="50"
+                        />
+                    </div>
+                    <div class="contact-option">
+                        <input
+                            type="checkbox"
+                            name="otra"
+                            id="chk-otra"
+                            onclick="toggleContactInput(this);"
+                        />
+                        <label for="chk-otra">Otra</label>
+                        <input
+                            type="text"
+                            id="contact-otra"
+                            name="otra-id"
+                            class="contact-input"
+                            placeholder="ID o URL"
+                            minlength="4"
+                            maxlength="50"
+                        />
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Sección 3: ¿Cuándo y de qué trata? -->
+            <fieldset>
+                <legend>¿Cuándo y de qué trata?</legend>
+
+                <label for="startTime">Día hora inicio <span>*</span></label>
+                <input type="datetime-local" id="startTime" required />
+
+                <label for="endTime">
+                    Día hora término
+                    <small>(opcional; debe ser mayor que inicio)</small>
+                </label>
+                <input type="datetime-local" id="endTime" />
+
+                <label for="descripcion">Descripción</label>
+                <textarea
+                    id="descripcion"
+                    cols="50"
+                    rows="10"
+                    placeholder="Descripción opcional"
+                ></textarea>
+
+                <label for="tema">Tema <span>*</span></label>
+                <select id="tema" required>
+                    <option value="">-- Seleccione Tema --</option>
+                    <option value="musica">Música</option>
+                    <option value="deporte">Deporte</option>
+                    <option value="ciencias">Ciencias</option>
+                    <option value="religion">Religión</option>
+                    <option value="politica">Política</option>
+                    <option value="tecnologia">Tecnología</option>
+                    <option value="juegos">Juegos</option>
+                    <option value="baile">Baile</option>
+                    <option value="comida">Comida</option>
+                    <option value="otro">Otro</option>
+                </select>
+
+                <div id="otroTemaContainer">
+                    <label for="otroTema"
+                        >Describa el tema <span>*</span></label
+                    >
+                    <input
+                        type="text"
+                        id="otroTema"
+                        placeholder="3 a 15 caracteres"
+                        minlength="3"
+                        maxlength="15"
+                    />
+                </div>
+
+                <div id="fotoContainer">
+                    <label for="foto">
+                        Foto <span>*</span>
+                        <small>(mín. 1, máx. 5 fotos)</small>
+                    </label>
+                    <input
+                        type="file"
+                        id="foto"
+                        name="foto"
+                        accept="image/*"
+                        required
+                    />
+                </div>
+                <button type="button" id="addPhotoButton">
+                    Agregar otra foto
+                </button>
+            </fieldset>
+
+            <div class="buttons">
+                <button type="submit" id="submitButton">
+                    Agregar esta actividad
+                </button>
+                <button
+                    type="button"
+                    onclick="window.location.href='index.html'"
+                >
+                    Cancelar
+                </button>
+            </div>
+        </form>
+
+        <!-- Modal de confirmación -->
+        <div id="confirmationModal" class="modal">
+            <div class="modal-content">
+                <p>¿Está seguro que desea agregar esta actividad?</p>
+                <div class="botones-modal">
+                    <button id="confirmYes">Sí, estoy seguro</button>
+                    <button id="confirmNo">No, quiero volver</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje final tras la confirmación -->
+        <div id="finalMessage" class="modal">
+            <div class="modal-content">
+                <p>
+                    Hemos recibido su información, muchas gracias y suerte en su
+                    actividad.
+                </p>
+                <button id="backToHome">Volver al inicio</button>
+            </div>
+        </div>
+        <script src="js/agregar.js"></script>
+    </body>
+</html>
