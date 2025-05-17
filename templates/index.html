@@ -1,0 +1,55 @@
+{% extends "base.html" %} {% block title %}Portada - Actividades Recreativas{%
+endblock %} {% block header %}Bienvenido a Actividades Recreativas{% endblock %}
+{% block content %}
+<div class="menu">
+    <button onclick="location.href='{{ url_for('agregar_actividad') }}'">
+        Agregar Actividad
+    </button>
+    <button onclick="location.href='{{ url_for('listado_actividades') }}'">
+        Ver Listado de Actividades
+    </button>
+    <button onclick="location.href='{{ url_for('estadisticas') }}'">
+        Estadísticas
+    </button>
+</div>
+
+{% if success_message %}
+<div class="success-message">{{ success_message }}</div>
+{% endif %}
+
+<div class="activities">
+    <h2>Últimas 5 Actividades</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Inicio</th>
+                <th>Término</th>
+                <th>Comuna</th>
+                <th>Sector</th>
+                <th>Tema</th>
+                <th>Foto</th>
+            </tr>
+        </thead>
+        <tbody id="activitiesTableBody">
+            {% for activity in activities %}
+            <tr>
+                <td>{{ activity.inicio }}</td>
+                <td>{{ activity.termino or "-" }}</td>
+                <td>{{ activity.comuna }}</td>
+                <td>{{ activity.sector }}</td>
+                <td>{{ activity.tema }}</td>
+                <td>
+                    {% if activity.foto %}
+                    <img
+                        src="{{ activity.foto }}"
+                        alt="{{ activity.tema }}"
+                        style="width: 80px"
+                    />
+                    {% else %} - {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

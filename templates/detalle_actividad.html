@@ -1,0 +1,64 @@
+{% extends "base.html" %} {% block title %}Detalle de Actividad{% endblock %} {%
+block header %}Detalle de Actividad{% endblock %} {% block content %}
+
+<div id="detalleActividad">
+    <table class="detalle-table">
+        <tr>
+            <th>Inicio</th>
+            <td>{{ activity.inicio }}</td>
+        </tr>
+        <tr>
+            <th>Término</th>
+            <td>{{ activity.termino }}</td>
+        </tr>
+        <tr>
+            <th>Comuna</th>
+            <td>{{ activity.comuna }}</td>
+        </tr>
+        <tr>
+            <th>Sector</th>
+            <td>{{ activity.sector }}</td>
+        </tr>
+        <tr>
+            <th>Tema</th>
+            <td>{{ activity.tema }}</td>
+        </tr>
+        <tr>
+            <th>Organizador</th>
+            <td>{{ activity.organizador }}</td>
+        </tr>
+        <tr>
+            <th>Total Fotos</th>
+            <td>{{ activity.totalFotos }}</td>
+        </tr>
+    </table>
+    <h2>Fotos de la Actividad</h2>
+    <div class="fotos-container">
+        {% for foto in activity.fotos %}
+        <img
+            src="{{ foto }}"
+            alt="Foto {{ loop.index }}"
+            class="miniPhoto"
+            width="320"
+            height="240"
+        />
+        {% endfor %}
+    </div>
+</div>
+<div class="buttons">
+    <button onclick="location.href='{{ url_for('listado_actividades') }}'">
+        Volver al Listado de Actividades
+    </button>
+    <button onclick="location.href='{{ url_for('index') }}'">
+        Volver a la Portada
+    </button>
+</div>
+<!-- Modal para las fotos ampliadas -->
+<div id="photoModal" class="modal">
+    <div class="modal-content">
+        <span id="closeModal" class="close">&times;</span>
+        <div id="imgContainer"></div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/detalle.js') }}"></script>
+{% endblock %}

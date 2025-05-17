@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block title %}Estadísticas{% endblock %} {% block
+header %}Estadísticas{% endblock %} {% block content %}
+<div class="stats">
+    <h2>Actividades por Día</h2>
+    <img
+        src="{{ url_for('static', filename='img/graficos/linea.png') }}"
+        alt="Actividades por Día"
+    />
+
+    <h2>Actividades por Tipo</h2>
+    <img
+        src="{{ url_for('static', filename='img/graficos/torta.png') }}"
+        alt="Actividades por Tipo"
+    />
+
+    <h2>Actividades por Turno en Cada Mes</h2>
+    <img
+        src="{{ url_for('static', filename='img/graficos/barras.png') }}"
+        alt="Actividades por Turno en Cada Mes"
+    />
+</div>
+
+<div class="buttons">
+    <button onclick="location.href='{{ url_for('index') }}'">
+        Volver a la Portada
+    </button>
+</div>
+{% endblock %}

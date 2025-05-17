@@ -1,0 +1,399 @@
+{% extends "base.html" %}
+{% block title %}Agregar Actividad{% endblock %}
+{% block header %}Agregar Actividad{% endblock %}
+
+{% block content %}
+{% if error_message %}
+<div class="error-message">
+    {{ error_message }}
+</div>
+{% endif %}
+
+<form id="activityForm" action="{{ url_for('agregar_actividad') }}" method="POST" enctype="multipart/form-data" novalidate>
+    <!-- Sección 1: Información del lugar -->
+    <fieldset>
+        <legend>¿Dónde?</legend>
+        <label for="regionSelect">Región <span>*</span></label>
+        <select id="regionSelect" name="region_id" required>
+            <option value="">-- Seleccione Región --</option>
+        </select>
+
+        <label for="comunaSelect">Comuna <span>*</span></label>
+        <select id="comunaSelect" name="comuna_id" required>
+            <option value="">-- Seleccione Comuna --</option>
+        </select>
+
+        <label for="sectorInput"
+            >Sector (opcional, máx. 100 caracteres)</label
+        >
+        <input
+            type="text"
+            id="sectorInput"
+            name="sector"
+            maxlength="100"
+            placeholder="Ej: Centro, Norte, etc."
+            value="{{ form_data.sector if form_data else '' }}"
+        />
+    </fieldset>
+
+    <!-- Sección 2: Datos del organizador -->
+    <fieldset>
+        <legend>¿Quién organiza?</legend>
+
+        <label for="organizerName">Nombre <span>*</span></label>
+        <input
+            type="text"
+            id="organizerName"
+            name="nombre"
+            maxlength="200"
+            placeholder="Nombre del organizador"
+            required
+            value="{{ form_data.nombre if form_data else '' }}"
+        />
+
+        <label for="organizerEmail">Email <span>*</span></label>
+        <input
+            type="email"
+            id="organizerEmail"
+            name="email"
+            maxlength="100"
+            placeholder="correo@gmail.com"
+            required
+            value="{{ form_data.email if form_data else '' }}"
+        />
+
+        <label for="organizerPhone">
+            Número de celular
+            <small>(opcional, formato +NNN.NNNNNNNN)</small>
+        </label>
+        <input
+            type="tel"
+            id="organizerPhone"
+            name="celular"
+            placeholder="+569.12345678"
+            pattern="^\+\d{3}\.\d{8}$"
+            value="{{ form_data.celular if form_data else '' }}"
+        />
+
+        <!-- Sección Contactar por -->
+        <div id="contactGroup">
+            <p>Contactar por: <small>(opcional, máximo 5)</small></p>
+            <div class="contact-container">
+                <div class="contact-option">
+                    <input
+                        type="checkbox"
+                        name="instagram"
+                        id="chk-instagram"
+                        onclick="toggleContactInput(this);"
+                        {% if form_data and 'instagram' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-instagram">Instagram</label>
+                    <input
+                        type="text"
+                        id="contact-instagram"
+                        name="instagram-id"
+                        class="contact-input"
+                        placeholder="ID o URL"
+                        minlength="4"
+                        maxlength="50"
+                        value="{{ form_data['instagram-id'] if form_data and 'instagram-id' in form_data else '' }}"
+                        style="display: {% if form_data and 'instagram' in form_data %}inline-block{% else %}none{% endif %};"
+                    />
+                </div>
+                <div class="contact-option">
+                    <input
+                        type="checkbox"
+                        name="whatsapp"
+                        id="chk-whatsapp"
+                        onclick="toggleContactInput(this);"
+                        {% if form_data and 'whatsapp' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-whatsapp">WhatsApp</label>
+                    <input
+                        type="text"
+                        id="contact-whatsapp"
+                        name="whatsapp-id"
+                        class="contact-input"
+                        placeholder="ID o URL"
+                        minlength="4"
+                        maxlength="50"
+                        value="{{ form_data['whatsapp-id'] if form_data and 'whatsapp-id' in form_data else '' }}"
+                        style="display: {% if form_data and 'whatsapp' in form_data %}inline-block{% else %}none{% endif %};"
+                    />
+                </div>
+                <div class="contact-option">
+                    <input
+                        type="checkbox"
+                        name="telegram"
+                        id="chk-telegram"
+                        onclick="toggleContactInput(this);"
+                        {% if form_data and 'telegram' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-telegram">Telegram</label>
+                    <input
+                        type="text"
+                        id="contact-telegram"
+                        name="telegram-id"
+                        class="contact-input"
+                        placeholder="ID o URL"
+                        minlength="4"
+                        maxlength="50"
+                        value="{{ form_data['telegram-id'] if form_data and 'telegram-id' in form_data else '' }}"
+                        style="display: {% if form_data and 'telegram' in form_data %}inline-block{% else %}none{% endif %};"
+                    />
+                </div>
+                <div class="contact-option">
+                    <input
+                        type="checkbox"
+                        name="tiktok"
+                        id="chk-tiktok"
+                        onclick="toggleContactInput(this);"
+                        {% if form_data and 'tiktok' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-tiktok">TikTok</label>
+                    <input
+                        type="text"
+                        id="contact-tiktok"
+                        name="tiktok-id"
+                        class="contact-input"
+                        placeholder="ID o URL"
+                        minlength="4"
+                        maxlength="50"
+                        value="{{ form_data['tiktok-id'] if form_data and 'tiktok-id' in form_data else '' }}"
+                        style="display: {% if form_data and 'tiktok' in form_data %}inline-block{% else %}none{% endif %};"
+                    />
+                </div>
+                <div class="contact-option">
+                    <input
+                        type="checkbox"
+                        name="x"
+                        id="chk-x"
+                        onclick="toggleContactInput(this);"
+                        {% if form_data and 'x' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-x">X</label>
+                    <input
+                        type="text"
+                        id="contact-x"
+                        name="x-id"
+                        class="contact-input"
+                        placeholder="ID o URL"
+                        minlength="4"
+                        maxlength="50"
+                        value="{{ form_data['x-id'] if form_data and 'x-id' in form_data else '' }}"
+                        style="display: {% if form_data and 'x' in form_data %}inline-block{% else %}none{% endif %};"
+                    />
+                </div>
+                <div class="contact-option">
+                    <input
+                        type="checkbox"
+                        name="otra"
+                        id="chk-otra"
+                        onclick="toggleContactInput(this);"
+                        {% if form_data and 'otra' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-otra">Otra</label>
+                    <input
+                        type="text"
+                        id="contact-otra"
+                        name="otra-id"
+                        class="contact-input"
+                        placeholder="ID o URL"
+                        minlength="4"
+                        maxlength="50"
+                        value="{{ form_data['otra-id'] if form_data and 'otra-id' in form_data else '' }}"
+                        style="display: {% if form_data and 'otra' in form_data %}inline-block{% else %}none{% endif %};"
+                    />
+                </div>
+            </div>
+        </div>
+    </fieldset>
+
+    <!-- Sección 3: ¿Cuándo y de qué trata? -->
+    <fieldset>
+        <legend>¿Cuándo y de qué trata?</legend>
+
+        <label for="startTime">Día hora inicio <span>*</span></label>
+        <input type="datetime-local" id="startTime" name="dia_hora_inicio" required value="{{ form_data.dia_hora_inicio if form_data else '' }}" />
+
+        <label for="endTime">
+            Día hora término
+            <small>(opcional; debe ser mayor que inicio)</small>
+        </label>
+        <input type="datetime-local" id="endTime" name="dia_hora_termino" value="{{ form_data.dia_hora_termino if form_data else '' }}" />
+
+        <label for="descripcion">Descripción</label>
+        <textarea
+            id="descripcion"
+            name="descripcion"
+            cols="50"
+            rows="10"
+            placeholder="Descripción opcional"
+        >{{ form_data.descripcion if form_data else '' }}</textarea>
+
+        <!-- Tema con checkboxes -->
+        <div id="temaGroup">
+            <p>Tema <span>*</span> (seleccione al menos uno)</p>
+            <div class="tema-container">
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-musica"
+                        id="chk-musica"
+                        value="música"
+                        {% if form_data and 'tema-musica' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-musica">Música</label>
+                </div>
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-deporte"
+                        id="chk-deporte"
+                        value="deporte"
+                        {% if form_data and 'tema-deporte' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-deporte">Deporte</label>
+                </div>
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-ciencias"
+                        id="chk-ciencias"
+                        value="ciencias"
+                        {% if form_data and 'tema-ciencias' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-ciencias">Ciencias</label>
+                </div>
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-religion"
+                        id="chk-religion"
+                        value="religión"
+                        {% if form_data and 'tema-religion' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-religion">Religión</label>
+                </div>
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-politica"
+                        id="chk-politica"
+                        value="política"
+                        {% if form_data and 'tema-politica' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-politica">Política</label>
+                </div>
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-tecnologia"
+                        id="chk-tecnologia"
+                        value="tecnología"
+                        {% if form_data and 'tema-tecnologia' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-tecnologia">Tecnología</label>
+                </div>
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-juegos"
+                        id="chk-juegos"
+                        value="juegos"
+                        {% if form_data and 'tema-juegos' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-juegos">Juegos</label>
+                </div>
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-baile"
+                        id="chk-baile"
+                        value="baile"
+                        {% if form_data and 'tema-baile' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-baile">Baile</label>
+                </div>
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-comida"
+                        id="chk-comida"
+                        value="comida"
+                        {% if form_data and 'tema-comida' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-comida">Comida</label>
+                </div>
+                <div class="tema-option">
+                    <input
+                        type="checkbox"
+                        name="tema-otro"
+                        id="chk-tema-otro"
+                        value="otro"
+                        onclick="toggleOtroTema(this);"
+                        {% if form_data and 'tema-otro' in form_data %}checked{% endif %}
+                    />
+                    <label for="chk-tema-otro">Otro</label>
+                    <input
+                        type="text"
+                        id="otroTema"
+                        name="glosa_otro"
+                        placeholder="3 a 15 caracteres"
+                        minlength="3"
+                        maxlength="15"
+                        value="{{ form_data.glosa_otro if form_data and 'tema-otro' in form_data else '' }}"
+                        style="display: {% if form_data and 'tema-otro' in form_data %}inline-block{% else %}none{% endif %};"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div id="fotoContainer">
+            <label for="foto">
+                Foto <span>*</span>
+                <small>(mín. 1, máx. 5 fotos)</small>
+            </label>
+            <input
+                type="file"
+                id="foto"
+                name="foto"
+                accept="image/*"
+                required
+            />
+        </div>
+        <button type="button" id="addPhotoButton">
+            Agregar otra foto
+        </button>
+    </fieldset>
+
+    <div class="buttons">
+        <button type="button" id="submitButton">
+            Agregar esta actividad
+        </button>
+        <button
+            type="button"
+            onclick="window.location.href='{{ url_for('index') }}'"
+        >
+            Cancelar
+        </button>
+    </div>
+
+    <!-- Campo oculto para el envío directo del formulario -->
+    <input type="hidden" name="confirmed" id="confirmedInput" value="false">
+</form>
+
+<!-- Modal de confirmación -->
+<div id="confirmationModal" class="modal">
+    <div class="modal-content">
+        <p>¿Está seguro que desea agregar esta actividad?</p>
+        <div class="botones-modal">
+            <button id="confirmYes">Sí, estoy seguro</button>
+            <button id="confirmNo">No, quiero volver</button>
+        </div>
+    </div>
+</div>
+
+<!-- Script para el formulario -->
+<script src="{{ url_for('static', filename='js/agregar.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %} {% block title %}Listado de Actividades{% endblock %}
+{% block header %}Listado de Actividades{% endblock %} {% block content %}
+<div class="activities-list">
+    {% if activities %}
+    <table>
+        <thead>
+            <tr>
+                <th>Inicio</th>
+                <th>Término</th>
+                <th>Comuna</th>
+                <th>Sector</th>
+                <th>Tema</th>
+                <th>Organizador</th>
+                <th>Total Fotos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for activity in activities %}
+            <tr
+                onclick="window.location.href='{{ url_for('detalle_actividad', activity_id=activity.id) }}'"
+            >
+                <td>{{ activity.inicio }}</td>
+                <td>{{ activity.termino }}</td>
+                <td>{{ activity.comuna }}</td>
+                <td>{{ activity.sector }}</td>
+                <td>{{ activity.tema }}</td>
+                <td>{{ activity.organizador }}</td>
+                <td>{{ activity.totalFotos }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Controles de paginación -->
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% if has_prev %}
+        <a
+            href="{{ url_for('listado_actividades', page=page-1) }}"
+            class="pagination-btn"
+            >« Anterior</a
+        >
+        {% else %}
+        <span class="pagination-btn disabled">« Anterior</span>
+        {% endif %}
+
+        <span class="page-info">Página {{ page }} de {{ total_pages }}</span>
+
+        {% if has_next %}
+        <a
+            href="{{ url_for('listado_actividades', page=page+1) }}"
+            class="pagination-btn"
+            >Siguiente »</a
+        >
+        {% else %}
+        <span class="pagination-btn disabled">Siguiente »</span>
+        {% endif %}
+    </div>
+    {% endif %} {% else %}
+    <p class="no-activities">No hay actividades registradas.</p>
+    {% endif %}
+</div>
+
+<div class="buttons">
+    <button onclick="location.href='{{ url_for('index') }}'">
+        Volver a Portada
+    </button>
+</div>
+{% endblock %}
