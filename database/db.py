@@ -1,4 +1,14 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Enum
+from sqlalchemy import ( create_engine,
+    func,
+    extract,
+    case,
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    DateTime,
+    Enum
+)
 from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from werkzeug.utils import secure_filename
 import datetime
@@ -68,6 +78,15 @@ class ActividadTema(Base):
     tema = Column(Enum('música', 'deporte', 'ciencias', 'religión', 'política', 'tecnología', 'juegos', 'baile', 'comida', 'otro'), nullable=False)
     glosa_otro = Column(String(15), nullable=True)
     actividad_id = Column(Integer, ForeignKey('actividad.id'), nullable=False)
+
+class Comentario(Base):
+    __tablename__ = 'comentario'
+    id = Column(Integer, primary_key=True)
+    nombre = Column(String(80), nullable=False)
+    texto = Column(String(300), nullable=False)
+    fecha = Column(DateTime, nullable=False)
+    actividad_id = Column(Integer, ForeignKey('actividad.id'), nullable=False)
+
 
 # Esta función obtiene las últimas actividades desde la base de datos
 def get_latest_activities(limit=5):
@@ -296,7 +315,7 @@ def save_activity(form_data, files):
     finally:
         session.close()
 
-# Esta función obtiene todas las regiones y sus comunas para formato JSON
+# Esta función obtiene todas las regiones y sus comunas
 def get_regions_and_communes():
     try:
         session = SessionLocal()
@@ -318,5 +337,149 @@ def get_regions_and_communes():
     except Exception as e:
         print(f"Error al obtener regiones y comunas: {str(e)}")
         return {"regiones": []}
+    finally:
+        session.close()
+
+# Función para obtener estadísticas de actividades por día
+def get_activities_by_day():
+    try:
+        session = SessionLocal()
+        # Consultamos todas las actividades agrupadas por día de inicio
+        result = session.query(
+            func.date(Actividad.dia_hora_inicio).label('dia'),
+            func.count(Actividad.id).label('cantidad')
+        ).group_by(func.date(Actividad.dia_hora_inicio)).order_by('dia').all()
+
+        data = []
+        for row in result:
+            data.append({
+                'dia': row.dia.strftime('%Y-%m-%d'),
+                'cantidad': row.cantidad
+            })
+
+        return data
+    except Exception as e:
+        print(f"Error al obtener actividades por día: {str(e)}")
+        return []
+    finally:
+        session.close()
+
+# Función para obtener estadísticas de actividades por tema
+def get_activities_by_theme():
+    try:
+        session = SessionLocal()
+        # Consultamos todos los temas y contamos cuántas actividades tienen cada uno
+        result = session.query(
+            ActividadTema.tema,
+            func.count(ActividadTema.id).label('cantidad')
+        ).group_by(ActividadTema.tema).all()
+
+        data = []
+        for row in result:
+            data.append({
+                'tema': row.tema,
+                'cantidad': row.cantidad
+            })
+
+        return data
+    except Exception as e:
+        print(f"Error al obtener actividades por tema: {str(e)}")
+        return []
+    finally:
+        session.close()
+
+# Función para obtener estadísticas de actividades por mes y periodo del día
+def get_activities_by_month_and_time():
+    try:
+        session = SessionLocal()
+        # Definimos los periodos del día basados en la hora de inicio
+        result = session.query(
+            extract('year', Actividad.dia_hora_inicio).label('año'),
+            extract('month', Actividad.dia_hora_inicio).label('mes'),
+            func.sum(case(
+                (extract('hour', Actividad.dia_hora_inicio) < 12, 1),
+                else_=0
+            )).label('mañana'),
+            func.sum(case(
+                ((extract('hour', Actividad.dia_hora_inicio) >= 12) &
+                 (extract('hour', Actividad.dia_hora_inicio) < 18), 1),
+                else_=0
+            )).label('tarde'),
+            func.sum(case(
+                (extract('hour', Actividad.dia_hora_inicio) >= 18, 1),
+                else_=0
+            )).label('noche')
+        ).group_by(
+            extract('year', Actividad.dia_hora_inicio),
+            extract('month', Actividad.dia_hora_inicio)
+        ).order_by('año', 'mes').all()
+
+        meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio','Julio',
+            'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+        data = []
+        for row in result:
+            mes_nombre = f"{meses[int(row.mes)-1]} {int(row.año)}"
+
+            data.append({
+                'mes': mes_nombre,
+                'mañana': int(row.mañana),
+                'tarde': int(row.tarde),
+                'noche': int(row.noche)
+            })
+
+        return data
+    except Exception as e:
+        print(f"Error al obtener actividades por mes y horario: {str(e)}")
+        return []
+    finally:
+        session.close()
+
+# Función para obtener todos los comentarios asociados a un actividad
+def get_comments_by_activity(actividad_id):
+    try:
+        session = SessionLocal()
+        comentarios = session.query(Comentario).filter_by(actividad_id=actividad_id)\
+                     .order_by(Comentario.fecha.desc()).all()
+
+        result = []
+        for comentario in comentarios:
+            result.append({
+                'id': comentario.id,
+                'nombre': comentario.nombre,
+                'texto': comentario.texto,
+                'fecha': comentario.fecha.strftime("%d/%m/%Y %H:%M")
+            })
+
+        return result
+    except Exception as e:
+        print(f"Error al obtener comentarios: {str(e)}")
+        return []
+    finally:
+        session.close()
+
+# Esta función se encarga de guardar un nuevo comentario en la base de datos
+def save_comment(actividad_id, nombre, texto):
+    try:
+        session = SessionLocal()
+        # Verificamos que la actividad existe
+        actividad = session.query(Actividad).get(actividad_id)
+        if not actividad:
+            return False, "La actividad no existe"
+
+        # Creamos el nuevo comentario
+        nuevo_comentario = Comentario(
+            nombre=nombre,
+            texto=texto,
+            fecha=datetime.datetime.now(),
+            actividad_id=actividad_id
+        )
+
+        session.add(nuevo_comentario)
+        session.commit()
+
+        return True, "Comentario agregado exitosamente"
+    except Exception as e:
+        session.rollback()
+        return False, f"Error al agregar comentario: {str(e)}"
     finally:
         session.close()

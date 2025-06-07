@@ -100,7 +100,7 @@ th {
 }
 
 .activities-list tbody tr:hover {
-    background-color: #f5f5f5;
+    background-color: #eaefef;
 }
 
 /* Estilos para la paginación */
@@ -426,4 +426,127 @@ textarea.error {
     font-size: 14px;
     margin-top: 4px;
     display: block;
+}
+
+/* Estilos para la página de estadísticas */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.chart {
+    height: 400px;
+    width: 100%;
+}
+
+.back-link {
+    text-align: center;
+}
+
+.loading {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 20px;
+}
+
+/* Estilos para la sección de comentarios */
+.comentarios-section {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.comentario-form {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+.comentario-form label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.comentario-form input,
+.comentario-form textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.comentario-form span {
+    color: red;
+}
+
+.comentarios-lista {
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.comentario-item {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+}
+
+.comentario-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.comentario-nombre {
+    color: #1c6e8c;
+    font-weight: bold;
+}
+
+.comentario-fecha {
+    color: #666;
+    font-size: 14px;
+}
+
+.comentario-texto {
+    color: #333;
+    line-height: 1.4;
+}
+
+.no-comentarios {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 20px;
 }

@@ -1,28 +1,36 @@
-{% extends "base.html" %} {% block title %}Estadísticas{% endblock %} {% block
-header %}Estadísticas{% endblock %} {% block content %}
-<div class="stats">
-    <h2>Actividades por Día</h2>
-    <img
-        src="{{ url_for('static', filename='img/graficos/linea.png') }}"
-        alt="Actividades por Día"
-    />
+{% extends 'base.html' %} {% block title %}Estadísticas - Actividades
+Recreativas{% endblock %} {% block header %}Estadísticas de Actividades{%
+endblock %} {% block content %}
+<div class="container">
+    <!-- Gráfico de líneas: Actividades por día -->
+    <div class="chart-container">
+        <div class="chart-title">Cantidad de Actividades por Día</div>
+        <div id="chart-por-dia" class="chart">
+            <div class="loading">Cargando gráfico...</div>
+        </div>
+    </div>
 
-    <h2>Actividades por Tipo</h2>
-    <img
-        src="{{ url_for('static', filename='img/graficos/torta.png') }}"
-        alt="Actividades por Tipo"
-    />
+    <!-- Gráfico de torta: Actividades por tema -->
+    <div class="chart-container">
+        <div class="chart-title">Total de Actividades por Tema</div>
+        <div id="chart-por-tema" class="chart">
+            <div class="loading">Cargando gráfico...</div>
+        </div>
+    </div>
 
-    <h2>Actividades por Turno en Cada Mes</h2>
-    <img
-        src="{{ url_for('static', filename='img/graficos/barras.png') }}"
-        alt="Actividades por Turno en Cada Mes"
-    />
+    <!-- Gráfico de barras: Actividades por mes y horario -->
+    <div class="chart-container">
+        <div class="chart-title">Actividades por Mes y Período del Día</div>
+        <div id="chart-por-mes-horario" class="chart">
+            <div class="loading">Cargando gráfico...</div>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="{{ url_for('index') }}" class="button">Volver a la Portada</a>
+    </div>
 </div>
-
-<div class="buttons">
-    <button onclick="location.href='{{ url_for('index') }}'">
-        Volver a la Portada
-    </button>
-</div>
+{% endblock %} {% block scripts %}
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="{{ url_for('static', filename='js/estadisticas.js') }}"></script>
 {% endblock %}

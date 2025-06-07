@@ -45,6 +45,60 @@ block header %}Detalle de Actividad{% endblock %} {% block content %}
         {% endfor %}
     </div>
 </div>
+
+<!-- Sección de comentarios -->
+<div class="comentarios-section">
+    <h2>Comentarios</h2>
+
+    <!-- Formulario para agregar comentario -->
+    <div class="comentario-form">
+        <h3>Agregar un comentario</h3>
+        <form id="comentarioForm">
+            <label for="nombreComentario">Nombre <span>*</span></label>
+            <input
+                type="text"
+                id="nombreComentario"
+                name="nombre"
+                maxlength="80"
+                required
+                placeholder="Tu nombre"
+            />
+
+            <label for="textoComentario">Comentario <span>*</span></label>
+            <textarea
+                id="textoComentario"
+                name="texto"
+                rows="4"
+                cols="50"
+                maxlength="300"
+                required
+                placeholder="Escribe tu comentario aquí..."
+            ></textarea>
+
+            <div
+                id="comentarioError"
+                class="error-message"
+                style="display: none"
+            ></div>
+            <div
+                id="comentarioSuccess"
+                class="success-message"
+                style="display: none"
+            ></div>
+
+            <button type="submit">Agregar comentario</button>
+        </form>
+    </div>
+
+    <!-- Lista de comentarios -->
+    <div class="comentarios-lista">
+        <h3>Comentarios anteriores</h3>
+        <div id="comentariosContainer">
+            <div class="loading">Cargando comentarios...</div>
+        </div>
+    </div>
+</div>
+
 <div class="buttons">
     <button onclick="location.href='{{ url_for('listado_actividades') }}'">
         Volver al Listado de Actividades
@@ -61,4 +115,5 @@ block header %}Detalle de Actividad{% endblock %} {% block content %}
     </div>
 </div>
 <script src="{{ url_for('static', filename='js/detalle.js') }}"></script>
+<script src="{{ url_for('static', filename='js/comentarios.js') }}"></script>
 {% endblock %}

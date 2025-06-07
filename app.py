@@ -1,5 +1,17 @@
 from flask import Flask, request, render_template, redirect, url_for, session, jsonify
-from database.db import get_latest_activities, get_some_activities, get_activity_detail, save_activity, get_regions_and_communes
+from database.db import (
+    get_latest_activities,
+    get_some_activities,
+    get_activity_detail,
+    save_activity,
+    get_regions_and_communes,
+    get_activities_by_day,
+    get_activities_by_theme,
+    get_activities_by_month_and_time,
+    get_comments_by_activity,
+    save_comment
+)
+from utils.validations import validate_activity_form, validate_comment
 import json
 import re
 import datetime
@@ -108,93 +120,21 @@ def detalle_actividad(activity_id):
 def estadisticas():
     return render_template('estadisticas.html')
 
+# APIs para obtener datos de estadísticas
+@app.route('/api/estadisticas/por-dia')
+def api_actividades_por_dia():
+    data = get_activities_by_day()
+    return jsonify(data)
 
-# Función para validar campos del formulario
-def validate_activity_form(form_data, files):
-    errors = []
+@app.route('/api/estadisticas/por-tema')
+def api_actividades_por_tema():
+    data = get_activities_by_theme()
+    return jsonify(data)
 
-    # Validamos campos obligatorios
-    required_fields = {
-        'comuna_id': 'Comuna',
-        'nombre': 'Nombre del organizador',
-        'email': 'Email',
-        'dia_hora_inicio': 'Día y hora de inicio'
-    }
-
-    for field, field_name in required_fields.items():
-        if not form_data.get(field):
-            errors.append(f"El campo {field_name} es obligatorio")
-
-    # Validamos el email
-    if form_data.get('email'):
-        email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-        if not re.match(email_regex, form_data.get('email')):
-            errors.append("El formato del email no es válido")
-
-    # Validamos el teléfono
-    if form_data.get('celular'):
-        phone_regex = r'^\+\d{3}\.\d{8}$'
-        if not re.match(phone_regex, form_data.get('celular')):
-            errors.append("El formato del número de celular debe ser +NNN.NNNNNNNN")
-
-    # Validamos que haya al menos una foto
-    if 'foto' not in files:
-        errors.append("Debe incluir al menos una foto")
-    else:
-        foto_files = files.getlist('foto')
-        valid_photos = [f for f in foto_files if f and f.filename]
-
-        if len(valid_photos) < 1:
-            errors.append("Debe incluir al menos una foto")
-        elif len(valid_photos) > 5:
-            errors.append("Solo se permiten hasta 5 fotos")
-
-        # Validamos los tipos de archivos
-        for foto in valid_photos:
-            try:
-                tipo = filetype.guess(foto)
-                if not tipo or tipo.mime.split('/')[0] != 'image':
-                    errors.append(f"El archivo {foto.filename} no es una imagen válida")
-            except Exception:
-                errors.append(f"Error al verificar el tipo de archivo {foto.filename}")
-
-    # Validamos que se haya seleccionado al menos un tema
-    temas_seleccionados = [key for key in form_data.keys() if key.startswith('tema-')]
-    if not temas_seleccionados:
-        errors.append("Debe seleccionar al menos un tema")
-
-    # Validamos el tema "otro"
-    if 'tema-otro' in form_data:
-        if not form_data.get('glosa_otro'):
-            errors.append("Debe incluir la descripción del tema otro")
-        elif len(form_data.get('glosa_otro')) < 3 or len(form_data.get('glosa_otro')) > 15:
-            errors.append("La descripción del tema otro debe tener entre 3 y 15 caracteres")
-
-    # Validamos las fechas
-    try:
-        if form_data.get('dia_hora_inicio'):
-            inicio = datetime.datetime.fromisoformat(form_data.get('dia_hora_inicio'))
-
-            if form_data.get('dia_hora_termino'):
-                termino = datetime.datetime.fromisoformat(form_data.get('dia_hora_termino'))
-                if termino <= inicio:
-                    errors.append("La fecha de término debe ser posterior a la fecha de inicio")
-    except ValueError:
-        errors.append("El formato de fecha no es válido")
-
-    # Validamos las opciones de contacto
-    contact_options = ['whatsapp', 'telegram', 'instagram', 'tiktok', 'x', 'otra']
-    checked_options = [opt for opt in contact_options if opt in form_data]
-
-    for option in checked_options:
-        option_id = f"{option}-id"
-        if option_id in form_data:
-            if len(form_data.get(option_id)) < 4 or len(form_data.get(option_id)) > 50:
-                errors.append(f"El ID de {option} debe tener entre 4 y 50 caracteres")
-        else:
-            errors.append(f"Falta el ID para la opción de contacto {option}")
-
-    return errors
+@app.route('/api/estadisticas/por-mes-horario')
+def api_actividades_por_mes_horario():
+    data = get_activities_by_month_and_time()
+    return jsonify(data)
 
 # Ruta para proporcionar las regiones y comunas en formato JSON
 @app.route('/api/regiones-comunas')
@@ -202,6 +142,41 @@ def get_regiones_comunas_json():
     regions_data = get_regions_and_communes()
     return jsonify(regions_data)
 
+# Ruta para obtener los comentarios asociados a una actividad
+@app.route('/api/comentarios/<actividad_id>')
+def get_comentarios(actividad_id):
+    # Validamos que el ID sea un número
+    try:
+        actividad_id = int(actividad_id)
+    except ValueError:
+        # Si no es un número válido, retornamos una lista vacía
+        return []
+    comentarios = get_comments_by_activity(actividad_id)
+    return jsonify(comentarios)
+
+@app.route('/api/comentarios', methods=['POST'])
+def agregar_comentario():
+    data = request.get_json()
+    if not data:
+        return jsonify({'success': False, 'message': 'No se recibieron datos'}), 400
+
+    actividad_id = data.get('actividad_id')
+    nombre = data.get('nombre', '').strip()
+    texto = data.get('texto', '').strip()
+
+    # Validamos los datos
+    errors = validate_comment(actividad_id, nombre, texto)
+
+    if errors:
+        return jsonify({'success': False, 'message': ', '.join(errors)}), 400
+
+    # Guardamos el comentario
+    success, message = save_comment(actividad_id, nombre, texto)
+
+    if success:
+        return jsonify({'success': True, 'message': message})
+    else:
+        return jsonify({'success': False, 'message': message}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

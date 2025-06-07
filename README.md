@@ -1,27 +1,20 @@
-# Tarea 2 - Actividades Recreativas
+# Tarea 3 - Actividades Recreativas
 
-Este proyecto es una aplicación web desarrollada con Flask para gestionar y mostrar actividades recreativas. Permite a los usuarios agregar nuevas actividades, visualizar listados paginados y ver detalles de cada actividad individual.
+Este proyecto es una aplicación web desarrollada con Flask para gestionar y mostrar actividades recreativas.
 
-## Características
+## Principales cambios
 
-- Registro de nuevas actividades recreativas con formulario completo
-- Visualización de últimas actividades en la página principal
-- Listado paginado de todas las actividades
-- Vista detallada de cada actividad con imágenes
-- Sección de estadísticas con gráficos (estática)
+- Sección de estadísticas con gráficos (dinámica)
+- Agregar y visualizar comentarios en las actividades
 
----
 
 ## Consideraciones
 
-### Problema al validar los templates
+- Para el gráfico de torta (actividades por tema), cuando una actividad tiene más de un tema entonces se cuenta para cada uno de sus temas.
+- Para el gráfico de barras (actividades por mes y horario) se utiliza la hora de inicio de la actividad para clasificar a la misma dentro de un horario del día, pudiendo ser mañana (antes de las 12:00), tarde (antes de las 18:00) y noche (antes de las 00:00).
 
-Al validar archivos de plantillas Jinja2 (`.html`) con validadores HTML estándar, aparecen múltiples errores aunque el código funcione correctamente en la aplicación. Esto ocurre porque los validadores HTML tradicionales no están diseñados para entender la sintaxis de plantillas.
+Mención honrosa a Highcharts GPT para el estilo de los gráficos.
 
-
-### Obtención de actividades recientes
-
-Al usar `order_by(Actividad.dia_hora_inicio.desc())`, la consulta ordena estas fechas de manera que las más recientes (fechas mayores) aparecen antes que las más antiguas (fechas menores).
 
 ### Dependencias
 - Python
