@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portada - Actividades Recreativas</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+<header>
+    <h1>Bienvenido a Actividades Recreativas</h1>
+</header>
+<main>
+    <div class="activities">
+        <h2>Actividades Realizadas</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Inicio</th>
+                <th>Sector</th>
+                <th>Nombre</th>
+                <th>Tema</th>
+                <th>Nota</th>
+                <th>Evaluación</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="activity : ${activities}">
+                <td th:text="${#temporals.format(activity.diaHoraInicio, 'yyyy/MM/dd')}"></td>
+                <td th:text="${activity.sector ?: '-'}"></td>
+                <td th:text="${activity.nombre}"></td>
+                <td>
+                    <span th:each="tema, iterStat : ${activity.temas}">
+                        <span th:text="${tema.tema.name()}"></span>
+                        <span th:if="${!iterStat.last}"> ; </span>
+                    </span>
+                </td>
+                <td>
+                    <span th:id="'promedio-' + ${activity.id}"
+                          th:text="${activity.promedioNotas != null ? #numbers.formatDecimal(activity.promedioNotas, 1, 1) : '-'}"></span>
+                </td>
+                <td>
+                    <button type="button"
+                            class="btn-evaluar"
+                            th:onclick="'evaluarActividad(' + ${activity.id} + ')'"
+                            th:id="'btn-evaluar-' + ${activity.id}">
+                        Evaluar
+                    </button>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(activities)}">
+                <td colspan="7" style="text-align: center;">No hay actividades realizadas</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<script th:src="@{/js/evaluacion.js}"></script>
+</body>
+</html>
